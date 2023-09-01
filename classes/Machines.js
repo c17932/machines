@@ -18,9 +18,15 @@ module.exports = class Machines {
 
     // constructor
     constructor(
-        VPN,
+        vpnInstance,
         splices = [],
     ) {
+
+        // If vpnInstance is a VPN
+        if (vpnInstance instanceof VPN)
+
+            // Save it
+            this.#VPN = vpnInstance;
 
         // spliceMachines
         this.spliceMachines(splices);
@@ -55,8 +61,7 @@ module.exports = class Machines {
             if (Array.isArray(splices)) {
 
                 // Initialize
-                let machines = [],
-                    VPN = require("./VPN");
+                let machines = [];
 
                 // For each splice of splices
                 splices.forEach((
@@ -67,14 +72,15 @@ module.exports = class Machines {
                     if (
                         splice.machineName &&
                         splice.class
-                    )
+                    ) {
 
+                        // For each 
                         // Get VPN
                         let 
                         // Save it
                         machines.push(splice);
 
-
+                    }
 
                 });
 
