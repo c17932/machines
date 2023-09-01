@@ -25,12 +25,12 @@ module.exports = class VPN {
 
     }
 
-    // getData
-    getData() {
+    // getMachines
+    getMachines() {
 
         // Simply call this.#getDataCallback
         this.#getDataCallback();
 
     }
 
-}
+};
