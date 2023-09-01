@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "@pulumi/tailscale": "^0.12.2",
+    "arpscan": "^1.0.2",
+    "axios": "^1.4.0",
+    "jsonwebtoken": "^9.0.1",
+    "node-nmap": "^4.0.0",
+    "nodearp": "^1.0.2",
+    "os": "^0.1.2",
+    "tplink-smarthome-api": "^4.2.0"
+  },
+  "name": "cinder",
+  "version": "0.0.1",
+  "main": "Machines.imp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Brent Bevans",
+  "license": "ISC",
+  "description": ""
+}
