@@ -50,7 +50,7 @@ module.exports = class Machines {
 
             // If splices is a single machine definition
             if (
-                splices.machineName &&
+                splices.hostname &&
                 splices.class
             )
 
@@ -61,7 +61,8 @@ module.exports = class Machines {
             if (Array.isArray(splices)) {
 
                 // Initialize
-                let machines = [];
+                let machines = [],
+                    vpnMachines = this.#VPN.getMachines();
 
                 // For each splice of splices
                 splices.forEach((
@@ -70,24 +71,35 @@ module.exports = class Machines {
 
                     // If splice is a machine definition
                     if (
-                        splice.machineName &&
+                        splice.hostname &&
                         splice.class
                     ) {
 
-                        // For each 
-                        // Get VPN
-                        let 
-                        // Save it
-                        machines.push(splice);
+                        // For each machine in vpnMachines
+                        vpnMachines.forEach((
+                            vpnMachine,
+                        ) => {
+
+                            // If splice is vpnMachine
+                            if (splice.hostname === vpnMachine.hostname)
+
+                                // Save the machine
+                                machines.push({
+                                    hostname: vpnMachine.hostname,
+                                    ip: vpnMachine.ip,
+                                    class: splice.hostname,
+                                });
+
+                        });
 
                     }
 
                 });
 
                 // Save machines
-                splices = {
+                splices = [{
                     replacements: machines,
-                };
+                }];
 
             }
 
