@@ -1,8 +1,5 @@
-// require Nestable
-let Nestable = require("./Nestable");
-
 // Machine
-module.exports = class Machine extends Nestable {
+module.exports = class Machine {
 
     /**
      * @var {string} #ip The IP address of this machine.
@@ -26,9 +23,6 @@ module.exports = class Machine extends Nestable {
         hostname,
     ) {
 
-        // super
-        super();
-        
         // Save
 
             // ip
@@ -37,43 +31,6 @@ module.exports = class Machine extends Nestable {
             // name
             this.#hostname = hostname;
 
-        // Find out whether we are on this machine or not
-        var passwords = require("./passwords.js"),
-            jwt = require("jsonwebtoken"),
-            user = {
-                id: "cinder",
-                role: "super",
-            },
-            token = jwt.sign(
-                user,
-                passwords.sudo,
-                {
-                    expiresIn: '1h',
-                }
-            ),
-            https = require("https"),
-            data = "",
-            req = https.request(
-                {
-                    hostname: this.#ip,
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                },
-                () => {},
-            ).on(
-                "error",
-                (
-                    error,
-                ) => {
-
-                    // console.error
-                    console.error(error);
-
-                },
-            ).end();
-        
     }
 
 };
