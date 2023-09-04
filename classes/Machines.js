@@ -5,6 +5,12 @@ const VPN = require("./VPN");
 module.exports = class Machines {
 
     /**
+     * @var {express} express Express.js
+     * @private
+     */
+    #express;
+
+    /**
      * @var {array} machines Machines in the system {@see spliceMachines}.
      * @private
      */
@@ -21,7 +27,11 @@ module.exports = class Machines {
         vpnInstance,
         splices = [],
         port = 3000,
+        callback,
     ) {
+
+        // Express
+        this.#express = require("express")().listen(port);
 
         // If vpnInstance is a VPN
         if (vpnInstance instanceof VPN)
