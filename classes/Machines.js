@@ -20,6 +20,7 @@ module.exports = class Machines {
     constructor(
         vpnInstance,
         splices = [],
+        port = 3000,
     ) {
 
         // If vpnInstance is a VPN
