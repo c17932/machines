@@ -22,27 +22,51 @@ module.exports = class Machines {
      */
     #VPN;
 
-    // constructor
+    /**
+     * 
+     * @param {array} VPNs The VPN objects to use.
+     * @param {*} splices 
+     * @param {*} port 
+     * @param {*} callback 
+     */
     constructor(
-        vpnInstance,
+        VPNs,
         splices = [],
         port = 3000,
         callback,
     ) {
 
-        // Express
+        // port
         this.#express = require("express")().listen(port);
 
-        // If vpnInstance is a VPN
-        if (vpnInstance instanceof VPN)
+        // VPNs
 
-            // Save it
-            this.#VPN = vpnInstance;
-
-        // spliceMachines
+            
+        this.spliceVPNs(VPNs);
+        
+        // splices
         this.spliceMachines(splices);
 
+        // callback
+
+            // If callback is a function
+            if (typeof callback === "function")
+        
+                // Call callback
+                callback();
+
     }
+
+    // this.#VPNs
+
+        // getVPNs
+        getVPNs(
+            selects,
+        ) {
+
+
+
+        }
 
     // this.#machines
 
