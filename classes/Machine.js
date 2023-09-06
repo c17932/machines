@@ -1,5 +1,8 @@
+// require Nestable
+const Nestable = require("./Nestable");
+
 // Machine
-module.exports = class Machine {
+module.exports = class Machine extends Nestable {
 
     /**
      * @var {string} #ip The IP address of this machine.
@@ -15,13 +18,18 @@ module.exports = class Machine {
     
     /**
      * Saves ip and hostname
+     * @param {Machines} parent The Machines object this Machine is a part of.
      * @param {string} ip IP address of the machine.
      * @param {string} hostname Hostname of the machine.
      */
     constructor(
+        parent,
         ip,
         hostname,
     ) {
+
+        // super
+        super(parent);
 
         // Save
 
