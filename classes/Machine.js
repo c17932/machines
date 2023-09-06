@@ -15,6 +15,12 @@ module.exports = class Machine extends Nestable {
      * @private
      */
     #hostname;
+
+    /**
+     * @var {boolean} isCurrentMachine Whether this Machine is the current running machine.
+     * @private
+     */
+    #isCurrentMachine = false;
     
     /**
      * Saves ip and hostname
@@ -39,6 +45,27 @@ module.exports = class Machine extends Nestable {
             // name
             this.#hostname = hostname;
 
+        // this.#isCurrentMachine
+
+            // Express route
+            this.parent.express.get(
+                "/machines/${this.#hostname}/thisCheck",
+                (
+                    req,
+                    res,
+                ) => {
+
+                    // If req.json.ip === this.#ip
+                    if (this.#ip === req.json.ip)
+
+                        // Set this machine as the current, running machine
+                        this.#isCurrentMachine = true;
+
+                },
+            );
+
+            // API call
+                            
     }
 
 };

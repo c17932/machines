@@ -4,6 +4,12 @@ const VPN = require("./VPN");
 // Machines
 module.exports = class Machines {
 
+    /** @var {number} port The port to listen to. */
+    port;
+
+    /** @var {https} https */
+    https;
+
     /** @var {express} express Express.js */
     express;
 
@@ -26,8 +32,26 @@ module.exports = class Machines {
         port = 3000,
     ) {
 
-        // this.express
-        this.express = require("express")().listen(port);
+        // Initialize
+        const fs = require("fs");
+
+            // Express
+            this.express = require("express")();
+
+            // https
+            this.https = require("https");
+
+                // this.port
+                this.port = port;
+
+                // server
+                this.https.server = this.https.createServer(
+                    {
+                        key: fs.readFileSync("server.key"),
+                        cert: fs.readFileSync("server.crt"),
+                    },
+                    this.express,
+                ).listen(this.port);
 
         // If vpnInstance is a VPN
         if (vpnInstance instanceof VPN)
@@ -69,7 +93,8 @@ module.exports = class Machines {
 
                 // Initialize
                 let machines = [],
-                    vpnMachines = this.#VPN.getMachines();
+                    vpnMachines = this.#VPN.getMachines(),
+                    isCurrentMachine = false;
 
                 // For each splice of splices
                 splices.forEach((
@@ -90,12 +115,29 @@ module.exports = class Machines {
                             // If splice is vpnMachine
                             if (splice.hostname === vpnMachine.hostname)
 
-                                // Save the machine
-                                machines.push({
-                                    hostname: vpnMachine.hostname,
-                                    ip: vpnMachine.ip,
-                                    class: splice.hostname,
-                                });
+                                // Express route
+                                this.express.get(
+                                    "/machines/${vpnMachine.hostname}/is-current-machine",
+                                    (
+                                        req,
+                                        res,
+                                    ) => {
+
+                                        // If req.json.ip === this.#ip
+                                        if (req.json.ip === this.#ip)
+
+                                            // isCurrentMachine is true
+                                            isCurrentMachine = true;
+
+                                        // Save the machine
+                                        machines.push({
+                                            isCurrentMachine: isCurrentMachine,
+                                            hostname: vpnMachine.hostname,
+                                            ip: vpnMachine.ip,
+                                            class: splice.hostname,
+                                        });
+                                    },
+                                );
 
                         });
 
