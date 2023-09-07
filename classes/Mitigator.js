@@ -2,15 +2,21 @@
 var Machine = require("./Machine");
 
 // Mitigator
-module.exports = class Mitigator {
+module.exports = class Mitigator extends Machine {
 
     // Do it
     constructor(
-        machines,
+        parent,
         onReady,
     ) {
 
-        
+        // super
+        super(parent);
+
+        // Look up other mitigators
+
+            // this.parent.getMachines
+            let machines = this.parent.getMachines();
 
     }
 
