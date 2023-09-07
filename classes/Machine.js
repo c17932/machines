@@ -49,14 +49,14 @@ module.exports = class Machine extends Nestable {
 
             // Express route
             this.parent.express.get(
-                "/machines/${this.#hostname}/thisCheck",
+                "/machines/${this.#hostname}",
                 (
                     req,
                     res,
                 ) => {
 
-                    // If req.json.ip === this.#ip
-                    if (this.#ip === req.json.ip)
+                    // If req.headers.hostname === this.#ip
+                    if (req.headers.hostname === this.#ip)
 
                         // Set this machine as the current, running machine
                         this.#isCurrentMachine = true;
@@ -65,7 +65,11 @@ module.exports = class Machine extends Nestable {
             );
 
             // API call
-                            
+            this.parent.https.request({
+                hostname: this.#ip,
+                path: "/machines/${this.#hostname}",
+            });
+
     }
 
 };

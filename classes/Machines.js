@@ -93,8 +93,7 @@ module.exports = class Machines {
 
                 // Initialize
                 let machines = [],
-                    vpnMachines = this.#VPN.getMachines(),
-                    isCurrentMachine = false;
+                    vpnMachines = this.#VPN.getMachines();
 
                 // For each splice of splices
                 splices.forEach((
@@ -115,29 +114,12 @@ module.exports = class Machines {
                             // If splice is vpnMachine
                             if (splice.hostname === vpnMachine.hostname)
 
-                                // Express route
-                                this.express.get(
-                                    "/machines/${vpnMachine.hostname}/is-current-machine",
-                                    (
-                                        req,
-                                        res,
-                                    ) => {
-
-                                        // If req.json.ip === this.#ip
-                                        if (req.json.ip === this.#ip)
-
-                                            // isCurrentMachine is true
-                                            isCurrentMachine = true;
-
-                                        // Save the machine
-                                        machines.push({
-                                            isCurrentMachine: isCurrentMachine,
-                                            hostname: vpnMachine.hostname,
-                                            ip: vpnMachine.ip,
-                                            class: splice.hostname,
-                                        });
-                                    },
-                                );
+                                // machines
+                                machines.push(new require(splice.class)(
+                                    this,
+                                    vpnMachine.ip,
+                                    vpnMachine.hostname,
+                                ));
 
                         });
 
