@@ -4,14 +4,14 @@ const VPN = require("./VPN");
 // Machines
 module.exports = class Machines {
 
-    /** @var {number} port The port to listen to. */
+    /** @var {number} port The port to host the https server at. */
     port;
-
-    /** @var {https} https */
-    https;
 
     /** @var {express} express Express.js */
     express;
+
+    /** @var {https} https */
+    https;
 
     /**
      * @var {array} machines Machines in the system {@see spliceMachines}.
@@ -25,7 +25,12 @@ module.exports = class Machines {
      */
     #VPN;
 
-    // constructor
+    /**
+     * Assigns sets up https and splices machines.
+     * @param {VPN} vpnInstance The VPN to use {@see VPN}.
+     * @param {array} splices {@see spliceMachines}
+     * @param {number} port The port to use when creating the https server.
+     */
     constructor(
         vpnInstance,
         splices = [],
@@ -35,14 +40,14 @@ module.exports = class Machines {
         // Initialize
         const fs = require("fs");
 
-            // Express
+            // port
+            this.port = port;
+
+            // express
             this.express = require("express")();
 
             // https
             this.https = require("https");
-
-                // this.port
-                this.port = port;
 
                 // server
                 this.https.server = this.https.createServer(
@@ -53,29 +58,37 @@ module.exports = class Machines {
                     this.express,
                 ).listen(this.port);
 
-        // If vpnInstance is a VPN
-        if (vpnInstance instanceof VPN)
+            // #VPN
+            if (vpnInstance instanceof VPN)
 
-            // Save it
-            this.#VPN = vpnInstance;
+                // Save it
+                this.#VPN = vpnInstance;
 
         // spliceMachines
         this.spliceMachines(splices);
 
     }
 
-    // this.#machines
+    // #machines
 
-        // getMachines
-        getMachines() {
+        // Simply returns #machines
+        get machines() {
 
-            // Simply return this.#machines
+            // Simply return #machines
             return this.#machines;
 
         }
 
-        // spliceMachines
-        spliceMachines(
+        /**
+         * Splices machines into #machines
+         * @param {array} splices Splices to splice, either an array of splices or a single splice,
+         * where a splice is an object consisting of the following properties:
+         * offset: how many machines to pass before splicing,
+         * length: how many machines to remove before splicing, starting at offset,
+         * replacements: machines to splice into #machines.
+         * @return {array} The replaced machines.
+         */
+        set machines(
             splices,
         ) {
 
@@ -139,31 +152,12 @@ module.exports = class Machines {
                 splice,
             ) => {
 
-                // Initialize
-                let returnedMachines = [];
-
-                // Defaults
-
-                    // offset
-                    splice.offset = splice.offset ?? 0;
-
-                    // length
-                    splice.length = splice.length ?? 0;
-
-                    // replacements
-                    splice.replacements = splice.replacements ?? [];
-
-                // Splice
-                returnedMachines.push(
-                    this.#machines.splice(
-                        splice.offset,
-                        splice.length,
-                        splice.replacements,
-                    ),
+                // Splice machines
+                this.#machines.splice(
+                    splice.offset ?? this.#machines.length,
+                    splice.length ?? 0,
+                    splice.replacements ?? [],
                 );
-
-                // Return returnedMachines
-                return returnedMachines;
 
             });
 

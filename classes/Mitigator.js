@@ -15,9 +15,8 @@ module.exports = class Mitigator extends Machine {
 
         // Look up other mitigators
 
-            // this.parent.getMachines
-            let machines = this.parent.getMachines();
-
+            // For each machine in the system
+            this.parent.
     }
 
 }

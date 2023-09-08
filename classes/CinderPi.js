@@ -1,5 +1,8 @@
+// require Machine
+const Machine = require("./Machine");
+
 /** CinderPi */
-module.exports = class CinderPi {
+module.exports = class CinderPi extends Machine {
 
     /**
      * @var {ABMT1000} #ABMT1000 ABMT1000 (UPS).
@@ -7,10 +10,26 @@ module.exports = class CinderPi {
      */
     #ABMT1000;
 
-    /** constructor */
+    /**
+     * Constructs Machine and calls ABMT1000 with callback
+     * @param {Machines} parent Parent Machines instance {@see Machines}.
+     * @param {string} ip IP address of this machine.
+     * @param {string} hostname Host name (machine name) of this machine.
+     * @param {function} callback Callback to call when ABMT1000 is done loading {@see ABMT1000}.
+     */
     constructor(
+        parent,
+        ip,
+        hostname,
         callback,
     ) {
+
+        // super
+        super(
+            parent,
+            ip,
+            hostname,
+        );
 
         // If callback isn't a function
         if (typeof callback !== "function")
@@ -18,12 +37,9 @@ module.exports = class CinderPi {
             // Make it one
             callback = () => {};
 
-        // Initialize
-        let ABMT1000 = require("./ABMT1000");
-
-        // Feed ABMT1000 a callback
-        this.#ABMT1000 = new ABMT1000(callback);
+        // this.#ABMT1000
+        this.#ABMT1000 = new require("./ABMT1000")(callback);
         
     }
 
-}
+};

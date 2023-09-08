@@ -49,7 +49,7 @@ module.exports = class Machine extends Nestable {
 
             // Express route
             this.parent.express.get(
-                "/machines/${this.#hostname}",
+                `/machines/${this.#hostname}`,
                 (
                     req,
                     res,
@@ -67,7 +67,7 @@ module.exports = class Machine extends Nestable {
             // API call
             this.parent.https.request({
                 hostname: this.#ip,
-                path: "/machines/${this.#hostname}",
+                path: `/machines/${this.#hostname}`,
             });
 
     }
