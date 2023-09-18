@@ -1,77 +1,30 @@
-// require VPN
-const VPN = require("./VPN");
-
 // Machines
 module.exports = class Machines {
 
-    /** @var {number} port The port to host the https server at. */
-    port;
-
-    /** @var {express} express Express.js */
-    express;
-
-    /** @var {https} https */
-    https;
-
     /**
-     * @var {array} machines Machines in the system {@see spliceMachines}.
+     * @var {array} machines Machines in this instance.
      * @private
      */
-    #machines = [];
+    #machines;
 
     /**
-     * @var {VPN} VPN The VPN to use.
-     * @private
-     */
-    #VPN;
-
-    /**
-     * Assigns sets up https and splices machines.
-     * @param {VPN} vpnInstance The VPN to use {@see VPN}.
-     * @param {array} splices {@see spliceMachines}
-     * @param {number} port The port to use when creating the https server.
+     * Splices machines
+     * @param {array|Machine|object} splices Splices to fulfill {@see spliceMachines}.
      */
     constructor(
-        vpnInstance,
-        splices = [],
-        port = 3000,
+        splices,
     ) {
 
-        // Initialize
-        const fs = require("fs");
-
-            // port
-            this.port = port;
-
-            // express
-            this.express = require("express")();
-
-            // https
-            this.https = require("https");
-
-                // server
-                this.https.server = this.https.createServer(
-                    {
-                        key: fs.readFileSync("server.key"),
-                        cert: fs.readFileSync("server.crt"),
-                    },
-                    this.express,
-                ).listen(this.port);
-
-            // #VPN
-            if (vpnInstance instanceof VPN)
-
-                // Save it
-                this.#VPN = vpnInstance;
-
-        // spliceMachines
-        this.spliceMachines(splices);
+        // Send off splices
+        this.spliceMachines(
+            splices,
+        );
 
     }
 
     // #machines
 
-        // Simply returns #machines
+        // get
         get machines() {
 
             // Simply return #machines
@@ -81,85 +34,82 @@ module.exports = class Machines {
 
         /**
          * Splices machines into #machines
-         * @param {array} splices Splices to splice, either an array of splices or a single splice,
-         * where a splice is an object consisting of the following properties:
-         * offset: how many machines to pass before splicing,
-         * length: how many machines to remove before splicing, starting at offset,
-         * replacements: machines to splice into #machines.
-         * @return {array} The replaced machines.
+         * @param {array|Machine|object} splices Either a single Machine, a single splice
+         * or an array of Machines and splices, where a splice is an object consisting of
+         * the following properties:
+         * start - Integer specifying where in the array to start splicing. If value is
+         * undefined, the end of the array is used. Value is otherwise converted to
+         * integer and applied.
+         * deleteCount - Integer specifying how many elements to remove from #machines
+         * before splicing, starting at start. Value is converted to integer and applied.
+         * replacements - Array of Machines to splice in to #machines at start. Elements
+         * are filtered unless they are instances of Machine.
+         * @return {array|null} The machines removed when splicing, or null if no splices
+         * occurred.
          */
-        set machines(
+        spliceMachines(
             splices,
         ) {
 
-            // If splices is a single machine definition
-            if (
-                splices.hostname &&
-                splices.class
-            )
+            // Wrap Machine in splice
+            wrap(machine) {
 
-                // Wrap it in an array
-                splices = [splices];
+                // Return wrapped object
+                return {
+                    replacements: [machine],
+                };
 
-            // Otherwise, if splices is an array
+            }
+
+            // If splices is a single machine
+            if (splices instanceof Machine)
+
+                // Wrap it
+                splices = wrap(splices);
+
+            // If splices is an array
             if (Array.isArray(splices)) {
 
                 // Initialize
-                let machines = [],
-                    vpnMachines = this.#VPN.getMachines();
+                let removedMachines = [];
 
                 // For each splice of splices
                 splices.forEach((
                     splice,
                 ) => {
 
-                    // If splice is a machine definition
-                    if (
-                        splice.hostname &&
-                        splice.class
-                    ) {
+                    // If splice is a single Machine
+                    if (splice instanceof Machine)
 
-                        // For each machine in vpnMachines
-                        vpnMachines.forEach((
-                            vpnMachine,
-                        ) => {
+                        // Wrap it
+                        splice = wrap(splice);
 
-                            // If splice is vpnMachine
-                            if (splice.hostname === vpnMachine.hostname)
+                    // Filter
+                    splice.replacements = splice.replacements.filter((
+                        replacement,
+                    ) => {
 
-                                // machines
-                                machines.push(new require(splice.class)(
-                                    this,
-                                    vpnMachine.ip,
-                                    vpnMachine.hostname,
-                                ));
+                        // If replacement is a Machine
+                        if (replacement instanceof Machine)
 
-                        });
+                            // Return true
+                            return true;
 
-                    }
+                    });
+
+                    // Make the splice
+                    removedMachines.push(...this.#machines.splice(
+                        typeof splice.start === "undefined" ? this.#machines.length : splice.start,
+                        splice.deleteCount ?? 0,
+                        ...splice.replacements ?? [],
+                    ));
 
                 });
 
-                // Save machines
-                splices = [{
-                    replacements: machines,
-                }];
+                // Return removedMachines
+                return removedMachines;
 
             }
-
-            // For each splice of splices
-            splices.forEach((
-                splice,
-            ) => {
-
-                // Splice machines
-                this.#machines.splice(
-                    splice.offset ?? this.#machines.length,
-                    splice.length ?? 0,
-                    splice.replacements ?? [],
-                );
-
-            });
 
         }
 
