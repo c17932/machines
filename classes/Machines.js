@@ -51,15 +51,18 @@ module.exports = class Machines {
             splices,
         ) {
 
-            // Wrap Machine in splice
-            wrap(machine) {
+            // Initialize
+            let Machine = require("./Machine"),
+                wrap = (
+                    machine,
+                ) => {
 
-                // Return wrapped object
-                return {
-                    replacements: [machine],
+                    // Return wrapped object
+                    return {
+                        replacements: [machine],
+                    };
+
                 };
-
-            }
 
             // If splices is a single machine
             if (splices instanceof Machine)

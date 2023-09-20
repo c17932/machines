@@ -5,12 +5,6 @@ const Nestable = require("./Nestable");
 module.exports = class Machine extends Nestable {
 
     /**
-     * @var {string} #ip The IP address of this machine.
-     * @private
-     */
-    #ip;
-
-    /**
      * @var {string} #hostname The host name of this machine.
      * @private
      */
@@ -30,22 +24,16 @@ module.exports = class Machine extends Nestable {
      */
     constructor(
         parent,
-        ip,
         hostname,
     ) {
 
         // super
         super(parent);
 
-        // Save
+        // #hostname
+        this.#hostname = hostname;
 
-            // ip
-            this.#ip = ip;
-
-            // name
-            this.#hostname = hostname;
-
-        // this.#isCurrentMachine
+        // #isCurrentMachine
 
             // Express route
             this.parent.express.get(
@@ -55,8 +43,8 @@ module.exports = class Machine extends Nestable {
                     res,
                 ) => {
 
-                    // If req.headers.hostname === this.#ip
-                    if (req.headers.hostname === this.#ip)
+                    // If req.headers.hostname === this.#hostname
+                    if (req.headers.hostname === this.#hostname)
 
                         // Set this machine as the current, running machine
                         this.#isCurrentMachine = true;
@@ -66,7 +54,7 @@ module.exports = class Machine extends Nestable {
 
             // API call
             this.parent.https.request({
-                hostname: this.#ip,
+                hostname: this.#hostname,
                 path: `/machines/${this.#hostname}`,
             });
 
