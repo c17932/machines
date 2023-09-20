@@ -33,30 +33,33 @@ module.exports = class Machine extends Nestable {
         // #hostname
         this.#hostname = hostname;
 
-        // #isCurrentMachine
+    }
 
-            // Express route
-            this.parent.express.get(
-                `/machines/${this.#hostname}`,
-                (
-                    req,
-                    res,
-                ) => {
+    // Establish whether this machine is this Machine
+    isCurrentMachine() {
 
-                    // If req.headers.hostname === this.#hostname
-                    if (req.headers.hostname === this.#hostname)
+        // Express route
+        this.parent.express.get(
+            `/machines/${this.#hostname}`,
+            (
+                req,
+                res,
+            ) => {
 
-                        // Set this machine as the current, running machine
-                        this.#isCurrentMachine = true;
+                // If req.headers.hostname === this.#hostname
+                if (req.headers.hostname === this.#hostname)
 
-                },
-            );
+                    // Set this machine as the current, running machine
+                    this.#isCurrentMachine = true;
 
-            // API call
-            this.parent.https.request({
-                hostname: this.#hostname,
-                path: `/machines/${this.#hostname}`,
-            });
+            },
+        );
+
+        // API call
+        this.parent.https.request({
+            hostname: this.#hostname,
+            path: `/machines/${this.#hostname}`,
+        });
 
     }
 
