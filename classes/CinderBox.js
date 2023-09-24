@@ -4,11 +4,32 @@ const Machine = require("./Machine");
 // CinderBox
 module.exports = class CinderBox extends Machine {
 
-    // @todo
-    constructor() {
+    /**
+     * @var {string} ip The ngrok ip assigned to this Machine.
+     * @private
+     */
+    #ip;
 
-        // Establish ngrok ip
-        let ngrok = require("ngrok"),
+    // @todo
+    constructor(
+        parent,
+        hostname,
+    ) {
+
+        // super
+        super(
+            parent,
+            hostname,
+        );
+
+        // ngrok
+        require("ngrok").connect({
+            addr: this.https,
+            proto: "https",
+        });
+
+            // Make the https request
+            
             
         // Correlate that ip to dynu
 

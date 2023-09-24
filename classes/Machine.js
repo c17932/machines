@@ -17,7 +17,7 @@ module.exports = class Machine extends Nestable {
     #isCurrentMachine = false;
     
     /**
-     * Saves ip and hostname
+     * Saves parent and hostname
      * @param {Machines} parent The Machines object this Machine is a part of.
      * @param {string} hostname Hostname of the machine.
      */

@@ -32,12 +32,19 @@ module.exports = class Machines {
      * @todo finish
      */
     constructor(
-        configPath,
+        config,
     ) {
 
         // Initialize
         let fs = require("fs"),
             express = require("express");
+
+        // If config is a path
+        if (typeof config === "string") {
+
+
+
+        }
 
         // #configPath
         this.#configPath = configPath;
@@ -58,9 +65,6 @@ module.exports = class Machines {
                 },
                 express,
             ).listen(this.#config.port);
-
-                // port
-                this.#https.server.port = port;
 
                 // express
                 this.#https.server.express = express;
