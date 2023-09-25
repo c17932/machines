@@ -2,16 +2,10 @@
 module.exports = class Machines {
 
     /**
-     * @var {string} configPath Path to the configuration file.
+     * @var {number} port The port to listen at with https.
      * @private
      */
-    #configPath;
-
-        /**
-         * @var {object} config Configuration.
-         * @private
-         */
-        #config;
+    #port;
 
     /**
      * @var {https} https
@@ -26,45 +20,25 @@ module.exports = class Machines {
     #machines;
 
     /**
-     * Requires https and splices machines
-     * @param {string} configPath Path to the config file. The config file should be a
-     * .json file with the following structure:
-     * @todo finish
+     * Splices machines into #machines
+     * @param {string} splices Splices to commit {@see spliceMachines}.
      */
     constructor(
-        config,
+        splices,
+        port = 80,
     ) {
 
         // Initialize
-        let fs = require("fs"),
-            express = require("express");
-
-        // If config is a path
-        if (typeof config === "string") {
-
-
-
-        }
-
-        // #configPath
-        this.#configPath = configPath;
-
-            // #config
-            this.#config = JSON.parse(fs.readFileSync(
-                this.#configPath,
-            ));
+        let express = require("express");
 
         // #https
         this.#https = require("https");
 
             // server
-            this.#https.server = this.#https.createServer(
-                {
-                    key: this.#config.key,
-                    cert: this.#config.cert,
-                },
-                express,
-            ).listen(this.#config.port);
+            this.#https.server = this.#https.createServer(express).listen(port);
+
+                // port
+                this.#https.server.port = port;
 
                 // express
                 this.#https.server.express = express;

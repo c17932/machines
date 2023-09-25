@@ -5,10 +5,10 @@ const Nestable = require("./Nestable");
 module.exports = class Machine extends Nestable {
 
     /**
-     * @var {string} #hostname The host name of this machine.
+     * @var {string} #hostnames Host names of this Machine.
      * @private
      */
-    #hostname;
+    #hostnames;
 
     /**
      * @var {boolean} isCurrentMachine Whether this Machine is the current running machine.
@@ -17,20 +17,28 @@ module.exports = class Machine extends Nestable {
     #isCurrentMachine = false;
     
     /**
-     * Saves parent and hostname
+     * Saves parent and hostnames
      * @param {Machines} parent The Machines object this Machine is a part of.
-     * @param {string} hostname Hostname of the machine.
+     * @param {string} hostnames Either a single hostname or an array of hostnames.
      */
     constructor(
         parent,
-        hostname,
+        hostnames,
     ) {
 
-        // super
+        // parent
         super(parent);
 
-        // #hostname
-        this.#hostname = hostname;
+        // hostnames
+
+            // If hostnames is a single hostname
+            if (!Array.isArray(hostnames))
+
+                // Wrap it in an array
+                hostnames = [hostnames];
+
+            // Save hostnames
+            this.#hostnames = hostnames;
 
     }
 
@@ -38,7 +46,7 @@ module.exports = class Machine extends Nestable {
     isCurrentMachine() {
 
         // Express route
-        this.parent.express.get(
+        this.parent.https.express.get(
             `/machines/${this.#hostname}`,
             (
                 req,
@@ -55,10 +63,20 @@ module.exports = class Machine extends Nestable {
         );
 
         // API call
-        this.parent.https.request({
-            hostname: this.#hostname,
-            path: `/machines/${this.#hostname}`,
-        });
+
+            // For each hostname of #hostnames
+            this.#hostnames.forEach(
+                hostname => {
+
+                    // Make the https request
+                    this.parent.https.request({
+                        hostname: hostname,
+                        port: this.parent.https.server.port,
+                        path: `/machines/${hostname}`,
+                    });
+
+                },
+            );
 
     }
 
