@@ -32,8 +32,8 @@ module.exports = class ABMT1000 {
                         "close",
                         () => {
 
-                            // Display closed message
-                            self.msg("Connection closed.");
+                            // Reconnect
+                            nutInstance.start();
 
                         }
                     ).on(
@@ -55,7 +55,7 @@ module.exports = class ABMT1000 {
 
                                         // Initialize
                                         let {exec} = require("child_process"),
-                                            passwords = require("../passwords");
+                                            passwords = require("../../passwords");
 
                                         // exec
                                         exec(

@@ -19,8 +19,7 @@ module.exports = class CinderPi extends Machine {
      */
     constructor(
         parent,
-        ip,
-        hostname,
+        hostnames,
         callback,
     ) {
 
