@@ -2,12 +2,6 @@
 module.exports = class Machines {
 
     /**
-     * @var {number} port The port to listen at with https.
-     * @private
-     */
-    #port;
-
-    /**
      * @var {https} https
      * @private
      */

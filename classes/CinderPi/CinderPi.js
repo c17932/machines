@@ -30,14 +30,30 @@ module.exports = class CinderPi extends Machine {
             hostname,
         );
 
-        // If callback isn't a function
-        if (typeof callback !== "function")
+        // Express route
+        this.parent.https.server.express.get(
+            `/machines/${this.parent.machines.find(machine => machine instanceof CinderPi).hostnames[0]}/keep-alive`,
+            (
+                req,
+                res,
+            ) => {
 
-            // Make it one
-            callback = () => {};
+                // Simply end
+                res.end();
 
-        // this.#ABMT1000
-        this.#ABMT1000 = new require("./ABMT1000")(callback);
+            },
+        );
+
+        // #ABMT1000
+
+            // If callback isn't a function
+            if (typeof callback !== "function")
+
+                // Make it one
+                callback = () => {};
+
+            // this.#ABMT1000
+            this.#ABMT1000 = new require("./ABMT1000")(callback);
         
     }
 
